@@ -19,3 +19,15 @@ To generate the manifests, made the necessary changes in the ./test/istio-operat
 ```
 $ kustomize build --enable-alpha-plugins test
 ```
+
+# How to improve
+Right now, the plugin is configured with Istio 1.13 manifests. To change the version:
+```
+$ go get istio.io/istio@<branch with the version on github.com/istio/istio>
+$ go mod tidy
+```
+
+Example for the istioctl 1.13:
+```
+$ go get istio.io/istio@release-1.13
+```
