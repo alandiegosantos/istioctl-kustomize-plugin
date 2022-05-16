@@ -24,13 +24,8 @@ func TestIstioManifests(t *testing.T) {
 	assert.Greater(t, len(result), 0, "generateIstioManifests returned an empty result")
 
 	for _, m := range result {
-
-		json, err := m.MarshalJSON()
+		_, err := m.MarshalJSON()
 		assert.Nil(t, err, "marshalling to JSON", m.GetKind())
-		fmt.Printf("item %v\n", string(json))
-
 	}
-
-	assert.Greater(t, 1, 2)
 
 }
