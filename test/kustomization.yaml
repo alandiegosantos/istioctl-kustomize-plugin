@@ -1,0 +1,4 @@
+resources:
+  - istio-operator.yaml
+transformers:
+  - generator.yaml

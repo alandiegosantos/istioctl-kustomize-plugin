@@ -1,0 +1,8 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: istio-controlplane
+spec:
+  # The demo profile is not working because an error in validation
+  # on a Extension Provider
+  profile: default
