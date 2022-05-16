@@ -1,4 +1,4 @@
-IMG ?= alandiegosantos/istio-kustomize-plugin:0.0.1
+IMG ?= alandiegosantos/istioctl-kustomize-plugin:0.0.1
 
 test: main.go deps.go go.sum go.mod
 	cat test/istio-operator.yaml | go run main.go -

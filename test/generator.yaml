@@ -5,4 +5,4 @@ metadata:
   annotations:
     config.kubernetes.io/function: |
       container:
-        image: alandiegosantos/istio-kustomize-plugin:0.0.1
+        image: alandiegosantos/istioctl-kustomize-plugin:0.0.1
