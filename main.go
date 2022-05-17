@@ -50,10 +50,6 @@ func main() {
 
 			} else {
 				// Just append the non IstioOperator manifests
-				if err := item.PipeE(kyaml.SetAnnotation("custom.io/the-value", "some-value")); err != nil {
-					return nil, err
-				}
-
 				result = append(result, item)
 			}
 
