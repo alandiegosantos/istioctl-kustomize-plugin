@@ -1,4 +1,4 @@
 resources:
-  - istio-operator.yaml
+  - ../base
 transformers:
   - generator.yaml

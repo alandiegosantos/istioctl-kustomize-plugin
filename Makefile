@@ -1,7 +1,14 @@
 IMG ?= alandiegosantos/istioctl-kustomize-plugin:0.0.1
 
+containerized: image
+
+
 test: main.go deps.go go.sum go.mod
 	cat test/istio-operator.yaml | go run main.go -
+
+plugins/istioctl-generator: main.go deps.go go.sum go.mod
+	go mod download
+	go build -v -o $@
 
 Dockerfile: main.go deps.go go.sum go.mod
 	go run main.go gen .
@@ -12,8 +19,11 @@ Dockerfile: main.go deps.go go.sum go.mod
 image: Dockerfile
 	docker build . -t ${IMG}
 
-e2e: image
-	kustomize build --enable-alpha-plugins test
+e2e-container: image
+	kustomize build --enable-alpha-plugins test/containerized_krm
+
+e2e-exec: plugins/istioctl-generator
+	kustomize build --enable-alpha-plugins --enable-exec test/exec_krm
 
 go-test: main.go main_test.go go.sum go.mod
 	go test ./...

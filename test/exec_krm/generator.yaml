@@ -1,0 +1,8 @@
+apiVersion: transformers.example.com/v1
+kind: IstioOperator
+metadata:
+  name: generateManifests
+  annotations:
+    config.kubernetes.io/function: |
+      exec:
+        path: ../../plugins/istioctl-generator
