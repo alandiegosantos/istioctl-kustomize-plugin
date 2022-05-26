@@ -116,7 +116,6 @@ func generateIstioManifests(item *kyaml.RNode) ([]*kyaml.RNode, error) {
 		return nil, errors.Wrap(err, "failed to close file")
 	}
 
-	// l := clog.NewConsoleLogger(ioutil.Discard, ioutil.Discard, log.RegisterScope("installer", "installer", 0))
 	manifests, _, err := manifest.GenManifests([]string{file.Name()}, nil, false, nil, nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to render the manifests")
