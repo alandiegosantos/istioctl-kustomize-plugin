@@ -5,4 +5,4 @@ metadata:
 spec:
   # The demo profile is not working because an error in validation
   # on a Extension Provider
-  profile: default
+  profile: demo

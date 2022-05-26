@@ -4,7 +4,7 @@ containerized: image
 
 
 test: main.go deps.go go.sum go.mod
-	cat test/istio-operator.yaml | go run main.go -
+	cat test/base/istio-operator.yaml | go run main.go -
 
 plugins/istioctl-generator: main.go deps.go go.sum go.mod
 	go mod download

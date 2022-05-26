@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
 
@@ -12,13 +11,12 @@ import (
 	"sigs.k8s.io/kustomize/kyaml/fn/framework/command"
 	"sigs.k8s.io/kustomize/kyaml/kio"
 	kyaml "sigs.k8s.io/kustomize/kyaml/yaml"
-	"sigs.k8s.io/yaml"
 
 	"istio.io/istio/operator/pkg/helm"
 	"istio.io/istio/operator/pkg/manifest"
 	"istio.io/istio/operator/pkg/name"
 	"istio.io/istio/operator/pkg/object"
-	"istio.io/istio/operator/pkg/util/clog"
+	"istio.io/pkg/log"
 )
 
 const (
@@ -31,7 +29,8 @@ type IstioOperator struct {
 }
 
 func init() {
-	log.SetOutput(ioutil.Discard)
+	logOptions := defaultLogOptions()
+	log.Configure(logOptions)
 }
 
 func main() {
@@ -103,17 +102,12 @@ func generateIstioManifests(item *kyaml.RNode) ([]*kyaml.RNode, error) {
 	}
 	defer os.Remove(file.Name())
 
-	itemJSON, err := item.MarshalJSON()
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to marshal item")
-	}
-
-	itemYAML, err := yaml.JSONToYAML(itemJSON)
+	itemYAML, err := item.String()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to parse item")
 	}
 
-	_, err = file.Write(itemYAML)
+	_, err = file.Write([]byte(itemYAML))
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to write file")
 	}
@@ -122,8 +116,8 @@ func generateIstioManifests(item *kyaml.RNode) ([]*kyaml.RNode, error) {
 		return nil, errors.Wrap(err, "failed to close file")
 	}
 
-	l := clog.NewConsoleLogger(ioutil.Discard, ioutil.Discard, nil)
-	manifests, _, err := manifest.GenManifests([]string{file.Name()}, nil, false, nil, l)
+	// l := clog.NewConsoleLogger(ioutil.Discard, ioutil.Discard, log.RegisterScope("installer", "installer", 0))
+	manifests, _, err := manifest.GenManifests([]string{file.Name()}, nil, false, nil, nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to render the manifests")
 	}
@@ -143,4 +137,21 @@ func generateIstioManifests(item *kyaml.RNode) ([]*kyaml.RNode, error) {
 
 	return result, nil
 
+}
+
+func defaultLogOptions() *log.Options {
+	o := log.DefaultOptions()
+
+	// These scopes are, at the default "INFO" level, too chatty for command line use
+	o.SetOutputLevel("validation", log.FatalLevel)
+	o.SetOutputLevel("processing", log.FatalLevel)
+	o.SetOutputLevel("analysis", log.FatalLevel)
+	o.SetOutputLevel("installer", log.FatalLevel)
+	o.SetOutputLevel("translator", log.FatalLevel)
+	o.SetOutputLevel("adsc", log.FatalLevel)
+	o.SetOutputLevel("default", log.FatalLevel)
+	o.SetOutputLevel("klog", log.FatalLevel)
+	o.SetOutputLevel("kube", log.FatalLevel)
+
+	return o
 }
